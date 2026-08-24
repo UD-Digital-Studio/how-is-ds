@@ -1,4 +1,4 @@
-import{redirect}from"next/navigation";import{db}from"@/lib/db";import{getSession}from"@/lib/auth";import{ClientForm}from"./client-form";import{ManagerForm}from"./manager-form";import{EditClientModal}from"./edit-client-modal";
+import{redirect}from"next/navigation";import{db}from"@/lib/db";import{getSession}from"@/lib/auth";import{ClientForm}from"./client-form";import{ManagerForm}from"./manager-form";import{EditClientModal}from"./edit-client-modal";import{EditManagerModal}from"./edit-manager-modal";
 const initials=(name:string)=>name.split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase();
 export default async function People(){
  const s=await getSession();if(!s)redirect("/login");
@@ -15,7 +15,7 @@ export default async function People(){
     <td><div className="table-contact"><a href={`mailto:${x.email}`}>{x.email}</a>{x.role==="CLIENT"&&<small>{x.phone||"No WhatsApp number"}</small>}</div></td>
     <td><span className="table-projects">{x.projects}</span></td>
     <td><span className={`table-access ${x.role==="CLIENT"&&x.whatsapp_opt_in&&x.phone?"enabled":""}`}><i/>{x.role==="CLIENT"?(x.whatsapp_opt_in&&x.phone?"Email + WhatsApp":"Email notifications"):"Can update projects"}</span></td>
-    <td>{x.role==="CLIENT"&&<EditClientModal client={x}/>}</td>
+    <td>{x.role==="CLIENT"?<EditClientModal client={x}/>:<EditManagerModal manager={x}/>}</td>
    </tr>)}</tbody></table></div>:<div className="empty-state">No project members yet. Use the actions above to build your team.</div>}
   </section>
  </main>
