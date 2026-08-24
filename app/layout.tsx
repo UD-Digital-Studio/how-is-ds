@@ -16,19 +16,20 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
   const session = await getSession();
-  let navigation: { role: string; projectCount: number } | null = null;
+  let navigation: { role: string; projects: { id: string; name: string }[] } | null = null;
   if (session) {
-    const access = await db.query(`select case when bool_or(role='OWNER') then 'OWNER'
-      when bool_or(role='MANAGER') then 'MANAGER' else 'CLIENT' end role,
-      count(distinct project_id)::int project_count from project_members where user_id=$1`, [session.userId]);
-    if (access.rows[0]?.project_count) {
-      navigation = { role: access.rows[0].role, projectCount: access.rows[0].project_count };
+    const access = await db.query(`select pm.role,p.id,p.name from project_members pm
+      join projects p on p.id=pm.project_id where pm.user_id=$1 order by p.name`, [session.userId]);
+    if (access.rowCount) {
+      const roles = access.rows.map((item) => item.role);
+      const role = roles.includes("OWNER") ? "OWNER" : roles.includes("MANAGER") ? "MANAGER" : "CLIENT";
+      navigation = { role, projects: access.rows.map((item) => ({ id: item.id, name: item.name })) };
     }
   }
   return (
     <html lang={locale}>
       <body><TranslationLayer locale={locale}/>
-        {session && navigation ? <AppNavigation name={session.name} role={navigation.role} projectCount={navigation.projectCount} locale={locale}/> : <div className="global-locale"><LocaleSwitcher locale={locale}/></div>}
+        {session && navigation ? <AppNavigation name={session.name} role={navigation.role} projects={navigation.projects} locale={locale}/> : <div className="global-locale"><LocaleSwitcher locale={locale}/></div>}
         <div className={session && navigation ? "authenticated-content" : ""}>{children}</div>
         {session && navigation && <ModalForms/>}
       </body>

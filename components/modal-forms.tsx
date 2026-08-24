@@ -34,6 +34,17 @@ export function ModalForms() {
       close.addEventListener("click", () => dialog.close());
       dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
     });
+    const openPeopleShortcut = () => {
+      if (pathname !== "/people") return;
+      const selector = window.location.hash === "#internal-access"
+        ? ".people-actions>article:nth-child(1)>.modal-trigger"
+        : window.location.hash === "#client-access"
+          ? ".people-actions>article:nth-child(2)>.modal-trigger" : "";
+      if (selector) document.querySelector<HTMLButtonElement>(selector)?.click();
+    };
+    window.addEventListener("hashchange", openPeopleShortcut);
+    window.setTimeout(openPeopleShortcut, 0);
+    return () => window.removeEventListener("hashchange", openPeopleShortcut);
   }, [pathname]);
   return null;
 }
