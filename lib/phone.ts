@@ -1,10 +1,16 @@
-export function normalizePhone(value:string){
+export function normalizePhone(value:string,countryCode="+237"){
   let compact=value.normalize("NFKC").trim().replace(/[\s().-]/g,"");
+  const callingCode=countryCode.trim();
+  if(!/^\+[1-9]\d{0,3}$/.test(callingCode))throw new Error("Select a valid country calling code.");
   if(compact.startsWith("00"))compact=`+${compact.slice(2)}`;
-  else if(/^6\d{8}$/.test(compact))compact=`+237${compact}`;
-  else if(/^2376\d{8}$/.test(compact))compact=`+${compact}`;
+  else if(!compact.startsWith("+")){
+    if(!/^\d+$/.test(compact))throw new Error("Enter digits only after selecting the country.");
+    const codeDigits=callingCode.slice(1);
+    if(compact.startsWith(codeDigits))compact=`+${compact}`;
+    else compact=`${callingCode}${compact.replace(/^0+/,"")}`;
+  }
   if(!/^\+[1-9]\d{7,14}$/.test(compact)){
-    throw new Error("Enter a valid WhatsApp number, for example +2376XXXXXXXX or 6XXXXXXXX.");
+    throw new Error("Enter a valid phone number for the selected country.");
   }
   return compact;
 }
