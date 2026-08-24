@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { retryDelivery } from "./actions";
+import { PageSizeSelector } from "./page-size-selector";
 
 const PAGE_SIZES = [10, 20, 50, 100] as const;
 
@@ -53,7 +54,7 @@ export default async function Notifications({ searchParams }: { searchParams: Pr
   return <main className="project-page">
     <div className="project-top"><Link href="/">← Dashboard</Link><Link href="/notifications/test" className="primary">Send test</Link></div>
     <section className="project-hero"><p className="eyebrow">DELIVERY LOG</p><h1>Notifications</h1></section>
-    <div className="notification-list-tools"><div className="pagination-summary">Showing {total ? offset + 1 : 0}–{Math.min(offset + pageSize, total)} of {total} deliveries</div><form method="get" className="page-size-form"><label>Deliveries per page<select name="perPage" defaultValue={pageSize}>{PAGE_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}</select></label><button type="submit">Apply</button></form></div>
+    <div className="notification-list-tools"><div className="pagination-summary">Showing {total ? offset + 1 : 0}–{Math.min(offset + pageSize, total)} of {total} deliveries</div><PageSizeSelector value={pageSize}/></div>
     <section className="report-list">{deliveries.rows.length ? deliveries.rows.map((item) => <div className="delivery-row" key={item.id}>
       <div><span>{item.channel.toUpperCase()} · {item.project_name}</span><strong>{item.title}</strong><small>{item.full_name} · {new Date(item.created_at).toLocaleString()}</small>{item.error_message && <small className="delivery-error">{item.error_message}</small>}</div>
       <em className={item.status.toLowerCase()}>{item.status}</em>
