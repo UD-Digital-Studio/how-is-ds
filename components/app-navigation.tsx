@@ -50,7 +50,7 @@ export function AppNavigation({ name, role, projects, locale }: Props) {
       </nav>
       <div className="sidebar-foot">
         <LocaleSwitcher locale={locale}/>
-        <Link href="/logout">↪ Logout</Link>
+        <a href="/logout">↪ Logout</a>
         <div className="profile"><span>{initials}</span><div><strong>{name}</strong><small>{role}</small></div></div>
       </div>
     </aside>
