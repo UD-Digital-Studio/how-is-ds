@@ -1,0 +1,2 @@
+export type DeliveryEventStatus="SENT"|"DELIVERED"|"READ"|"FAILED";
+export function mapEvolutionStatus(value:unknown):DeliveryEventStatus|null{const status=String(value||"").toUpperCase();if(status.includes("READ"))return"READ";if(status.includes("DELIVER"))return"DELIVERED";if(status.includes("FAIL")||status.includes("ERROR"))return"FAILED";if(status.includes("SEND")||status.includes("SENT"))return"SENT";return null}

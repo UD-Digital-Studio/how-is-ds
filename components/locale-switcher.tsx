@@ -1,0 +1,1 @@
+import{setLocale}from"@/app/locale/actions";export function LocaleSwitcher({locale}:{locale:"en"|"fr"}){return <form action={setLocale}><input type="hidden" name="locale" value={locale==="en"?"fr":"en"}/><button className="language" title={locale==="en"?"Passer en français":"Switch to English"}>{locale.toUpperCase()}</button></form>}

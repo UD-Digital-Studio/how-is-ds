@@ -1,0 +1,1 @@
+create table if not exists rate_limits(scope text not null,identifier_hash text not null,window_started_at timestamptz not null default now(),attempts int not null default 1,primary key(scope,identifier_hash));

@@ -1,0 +1,1 @@
+import{describe,expect,it}from"vitest";import{mapEvolutionStatus}from"@/lib/evolution-status";describe("Evolution delivery events",()=>{it.each([["messages.update: sent","SENT"],["DELIVERY_ACK","DELIVERED"],["READ","READ"],["send.error","FAILED"],["unknown",null]])("maps %s",(input,expected)=>expect(mapEvolutionStatus(input)).toBe(expected))});

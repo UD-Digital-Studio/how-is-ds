@@ -1,0 +1,61 @@
+{
+  "name": "Waklass Status Development",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "22",
+      "pnpmVersion": "10.27.0",
+      "nodeGypDependencies": true
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    }
+  },
+
+  "workspaceFolder": "/workspaces/waklass_status",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/waklass_status,type=bind",
+
+  "mounts": [
+    "source=waklass-status-pnpm-store,target=/home/vscode/.local/share/pnpm/store,type=volume",
+    "source=waklass-status-codex-config,target=/home/vscode/.codex,type=volume"
+  ],
+
+  "containerEnv": {
+    "CODEX_HOME": "/home/vscode/.codex"
+  },
+
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
+  },
+
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev && sudo rm -rf /var/lib/apt/lists/* && sudo mkdir -p /home/vscode/.local/bin /home/vscode/.local/share/pnpm /home/vscode/.codex && sudo chown -R vscode:vscode /home/vscode/.local /home/vscode/.codex && touch /home/vscode/.codex/config.toml && if ! grep -q '^cli_auth_credentials_store' /home/vscode/.codex/config.toml; then echo 'cli_auth_credentials_store = \"file\"' >> /home/vscode/.codex/config.toml; fi && curl -fsSL https://chatgpt.com/codex/install.sh | sh && if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; elif [ -f package.json ]; then pnpm install; else echo 'No package.json yet; skipping pnpm install.'; fi",
+
+  "forwardPorts": [3000],
+
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js Development Server",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "ms-azuretools.vscode-containers",
+        "qwtel.sqlite-viewer"
+      ]
+    }
+  },
+
+  "shutdownAction": "stopContainer"
+}

@@ -1,0 +1,3 @@
+milestone_code,milestone_title,milestone_start_date,milestone_due_date,milestone_status,requirement_code,requirement_title,requirement_description,requirement_status,task_title,task_description,assignee_name,task_due_date,task_weight,task_status
+S1,Platform foundations,,,UPCOMING,FR-50,Waklass-Controlled School Creation,,NOT_STARTED,Implement tenant creation,,,,1,NOT_STARTED
+S1,Platform foundations,,,,FR-50,Waklass-Controlled School Creation,,,Test tenant isolation,,,,,

@@ -1,0 +1,3 @@
+"use client";
+import{useState}from"react";
+export function PasswordInput({name,label,autoComplete="new-password",minLength,required=true}:{name:string;label:string;autoComplete?:string;minLength?:number;required?:boolean}){const[visible,setVisible]=useState(false);return <label>{label}<span className="password-field"><input name={name} type={visible?"text":"password"} autoComplete={autoComplete} minLength={minLength} required={required}/><button type="button" onClick={()=>setVisible(v=>!v)} aria-label={visible?`Hide ${label.toLowerCase()}`:`Show ${label.toLowerCase()}`} aria-pressed={visible}>{visible?"Hide":"Show"}</button></span></label>}

@@ -1,0 +1,1 @@
+export function normalizePhone(value:string){const compact=value.trim().replace(/[\s().-]/g,"");if(!/^\+[1-9]\d{7,14}$/.test(compact))throw new Error("Use international format, for example +2376XXXXXXXX");return compact}

@@ -1,0 +1,5 @@
+create type requirement_status as enum ('NOT_STARTED','IN_PROGRESS','BLOCKED','DONE');
+create table requirements(id uuid primary key default gen_random_uuid(),project_id uuid not null references projects(id) on delete cascade,milestone_id uuid not null references milestones(id) on delete cascade,code text not null,title text not null,description text,status requirement_status not null default 'NOT_STARTED',position int not null default 0,unique(project_id,code));
+create table tasks(id uuid primary key default gen_random_uuid(),requirement_id uuid not null references requirements(id) on delete cascade,title text not null,description text,assignee_name text,due_on date,weight numeric(8,2) not null default 1 check(weight>0),status requirement_status not null default 'NOT_STARTED',completed_at timestamptz,created_at timestamptz not null default now());
+create index requirements_milestone_idx on requirements(milestone_id,position);
+create index tasks_requirement_idx on tasks(requirement_id);
