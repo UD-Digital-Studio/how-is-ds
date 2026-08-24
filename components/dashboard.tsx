@@ -89,8 +89,8 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
           <div className="mobile-brand"><img src="/logo-ds.png" alt="How's DS" /><b>How's DS</b></div>
           <div className="header-actions">
             <LocaleSwitcher locale={locale}/>
-            <button className="icon-button" aria-label="Notifications"><Icon name="bell" /><i /></button>
-            <button className="avatar">{initials}</button>
+            {role !== "CLIENT" && <Link className="icon-button" href="/notifications" aria-label="Notifications"><Icon name="bell" /><i /></Link>}
+            <Link className="avatar" href={role === "OWNER" ? "/people" : "/projects"} aria-label="Open account area">{initials}</Link>
           </div>
         </header>
 
@@ -128,7 +128,7 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
             </section>
 
             <section className="activity card">
-              <div className="card-head"><h2>{copy.activity}</h2><button>View all</button></div>
+              <div className="card-head"><h2>{copy.activity}</h2><Link href={`/projects/${focus.id}`}>View all</Link></div>
               <div className="activity-list">
                 {activities.map((item) => <div className="activity-item" key={item.title+item.meta}><i className={item.type}>{item.type === "done" ? "✓" : item.type === "risk" ? "!" : "↗"}</i><div><strong>{item.title}</strong><span>{item.meta}</span></div></div>)}
               </div>
@@ -137,7 +137,7 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
           </div>
 
           <section className="roadmap-section">
-            <div className="section-heading"><h2>{copy.roadmap}</h2><button className="text-button">View full roadmap →</button></div>
+            <div className="section-heading"><h2>{copy.roadmap}</h2><Link className="text-button" href={`/projects/${focus.id}#roadmap`}>View full roadmap →</Link></div>
             <div className="roadmap-scroll">
               {roadmap.map((sprint) => <article className={`sprint-card ${sprint.status.toLowerCase()}`} key={sprint.id}>
                 <div><span>S{sprint.position}</span><em>{sprint.status.replaceAll("_"," ")}</em></div>
@@ -148,9 +148,9 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
           </section>
 
           <section className="all-projects">
-            <div className="section-heading"><h2>All projects</h2><button className="text-button">Manage projects →</button></div>
+            <div className="section-heading"><h2>All projects</h2><Link className="text-button" href="/projects">Manage projects →</Link></div>
             <div className="project-list">
-              {assignedProjects.map((project) => <article key={project.id}><span className="project-logo" style={{ background: "#009ba8" }}>{project.name.slice(0, 1)}</span><div className="project-name"><strong>{project.name}</strong><small>{project.client_name}</small></div><span className="desktop-status">{project.status.replaceAll("_"," ")}</span><div className="mini-progress"><i style={{ width: `${project.progress}%`, background: "#009ba8" }}/></div><b>{project.progress}%</b><button aria-label={`Open ${project.name}`}>›</button></article>)}
+              {assignedProjects.map((project) => <article key={project.id}><span className="project-logo" style={{ background: "#009ba8" }}>{project.name.slice(0, 1)}</span><div className="project-name"><strong>{project.name}</strong><small>{project.client_name}</small></div><span className="desktop-status">{project.status.replaceAll("_"," ")}</span><div className="mini-progress"><i style={{ width: `${project.progress}%`, background: "#009ba8" }}/></div><b>{project.progress}%</b><Link className="project-open" href={`/projects/${project.id}`} aria-label={`Open ${project.name}`}>›</Link></article>)}
             </div>
           </section>
         </div>
