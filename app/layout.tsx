@@ -11,6 +11,10 @@ import { db } from "@/lib/db";
 export const metadata: Metadata = {
   title: "How's DS — Project follow-up",
   description: "A clear view of every project, milestone and client report.",
+  icons: {
+    icon: [{ url: "/favicon.webp", type: "image/webp" }],
+    shortcut: "/favicon.webp",
+  },
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
