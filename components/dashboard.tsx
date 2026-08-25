@@ -67,7 +67,7 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
   return (
     <div className="app-shell">
       <aside className={menuOpen ? "sidebar open" : "sidebar"}>
-        <div className="brand"><img src="/logo-ds.png" alt="How's DS" /><span>How's DS</span></div>
+        <div className="brand"><img src="/Logo%20DS%20colored.png" alt="How's DS" /><span>How's DS</span></div>
         <nav>
           <Link className="active" href="/"><Icon name="grid" />Overview</Link>
           <Link href="/projects"><Icon name="folder" />Projects <span className="nav-count">{assignedProjects.length}</span></Link>
@@ -86,7 +86,7 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
       <main>
         <header>
           <button className="menu" onClick={() => setMenuOpen(true)} aria-label="Open navigation"><span/><span/><span/></button>
-          <div className="mobile-brand"><img src="/logo-ds.png" alt="How's DS" /><b>How's DS</b></div>
+          <div className="mobile-brand"><img src="/Logo%20DS%20colored.png" alt="How's DS" /><b>How's DS</b></div>
           <div className="header-actions">
             <LocaleSwitcher locale={locale}/>
             {role !== "CLIENT" && <Link className="icon-button" href="/notifications" aria-label="Notifications"><Icon name="bell" /><i /></Link>}

@@ -20,7 +20,7 @@ export function AppNavigation({ name, role, projects, locale }: Props) {
 
   return <>
     <aside className={`sidebar global-sidebar ${open ? "open" : ""}`}>
-      <Link href="/" className="brand" onClick={close}><img src="/logo-ds.png" alt="How's DS"/><span>How&apos;s DS</span></Link>
+      <Link href="/" className="brand" onClick={close}><img src="/Logo%20DS%20colored.png" alt="How's DS"/><span>How&apos;s DS</span></Link>
       <nav className="nested-nav">
         <Link className={active("/") ? "active" : ""} href="/" onClick={close}><span className="nav-symbol">▦</span>Overview</Link>
         <details key={`projects-${pathname}`} open={pathname.startsWith("/projects") || pathname === "/import"}>
@@ -57,7 +57,7 @@ export function AppNavigation({ name, role, projects, locale }: Props) {
     {open && <button className="scrim global-scrim" aria-label="Close navigation" onClick={() => setOpen(false)}/>} 
     <header className="global-mobile-header">
       <button className="menu" onClick={() => setOpen(true)} aria-label="Open navigation"><span/><span/><span/></button>
-      <Link href="/" className="mobile-brand"><img src="/logo-ds.png" alt="How's DS"/><b>How&apos;s DS</b></Link>
+      <Link href="/" className="mobile-brand"><img src="/Logo%20DS%20colored.png" alt="How's DS"/><b>How&apos;s DS</b></Link>
       <LocaleSwitcher locale={locale}/>
     </header>
   </>;
