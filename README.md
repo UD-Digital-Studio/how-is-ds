@@ -36,7 +36,7 @@ The database schema is deliberately plain SQL to keep hosting portable. Project 
 
 ### Roadmap CSV imports
 
-The template is at `public/templates/project-roadmap-template.csv`. Only milestone title, requirement code/title, and task title are required. Dates, descriptions, assignee, weight, and status are optional. Empty milestone status defaults to `UPCOMING`; empty requirement/task status defaults to `NOT_STARTED`; empty weight defaults to `1`.
+See [IMPORT.md](IMPORT.md) for the column and status reference. The template is at `public/templates/project-roadmap-template.csv`. Only milestone title, requirement code/title, and task title are required. Statuses must be uppercase (`UPCOMING`/`ACTIVE`/`BLOCKED`/`DONE` for milestones, `NOT_STARTED`/`IN_PROGRESS`/`BLOCKED`/`DONE` for requirements and tasks); empty cells take the defaults, and requirement and milestone statuses are recomputed from task statuses on import.
 
 ## Required deployment variables
 
