@@ -10,7 +10,7 @@ const copy={
 };
 const escape=(v:string)=>v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 export function reportEmail(input:ReportEmail){
- const t=copy[input.locale],logo=`${input.appUrl.replace(/\/$/,"")}/logo-email.png`,project=escape(input.projectName),title=escape(input.reportTitle);
+ const t=copy[input.locale],logo=`${input.appUrl.replace(/\/$/,"")}/logo-ds-colored.png`,project=escape(input.projectName),title=escape(input.reportTitle);
  const text=[t.greeting(input.clientName),"",t.intro(input.projectName),input.reportTitle,"",`${t.cta}${t.sep}${input.reportUrl}`,`${t.secondary}${t.sep}${input.projectUrl}`,"",t.footer(input.projectName)].join("\n");
  const html=`<!doctype html><html lang="${input.locale}"><body style="margin:0;padding:24px 12px;background:#f8f7fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1d162a">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #ebe8ef;border-radius:16px">
