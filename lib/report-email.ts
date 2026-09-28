@@ -40,3 +40,42 @@ export function reportEmail(input:ReportEmail){
 </table></body></html>`;
  return{subject:t.subject(input.projectName,input.reportTitle),text,html};
 }
+
+type FailureEmail={appUrl:string;managerName:string;projectName:string;reportTitle:string;clientName:string;channel:string;reason:string;locale:"en"|"fr"};
+const failureCopy={
+ en:{sep:": ",subject:(p:string)=>`${p}: a client notification failed`,eyebrow:"NOTIFICATION FAILED",greeting:(n:string)=>`Hello ${n},`,
+  intro:(c:string,ch:string)=>`The ${ch} notification to ${c} could not be sent.`,report:"Report",reason:"Reason",
+  cta:"Open the delivery log",footer:"Retry it from the delivery log once the cause is fixed."},
+ fr:{sep:" : ",subject:(p:string)=>`${p} : l’envoi d’une notification a échoué`,eyebrow:"ÉCHEC DE NOTIFICATION",greeting:(n:string)=>`Bonjour ${n},`,
+  intro:(c:string,ch:string)=>`La notification ${ch} destinée à ${c} n’a pas pu être envoyée.`,report:"Rapport",reason:"Motif",
+  cta:"Ouvrir le journal de livraison",footer:"Réessayez depuis le journal une fois la cause corrigée."},
+};
+export function deliveryFailureEmail(input:FailureEmail){
+ const t=failureCopy[input.locale],logo=`${input.appUrl.replace(/\/$/,"")}/logo-ds-colored.png`,logUrl=`${input.appUrl.replace(/\/$/,"")}/notifications`;
+ const channel=input.channel==="email"?"email":"WhatsApp";
+ const text=[t.greeting(input.managerName),"",t.intro(input.clientName,channel),`${t.report}${t.sep}${input.reportTitle}`,`${t.reason}${t.sep}${input.reason}`,"",`${t.cta}${t.sep}${logUrl}`,"",t.footer].join("\n");
+ const html=`<!doctype html><html lang="${input.locale}"><body style="margin:0;padding:24px 12px;background:#f8f7fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1d162a">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #ebe8ef;border-radius:16px">
+<tr><td style="padding:26px 28px 0">
+<img src="${logo}" width="140" height="51" alt="How’s DS" style="display:block;border:0;font:700 16px -apple-system,'Segoe UI',Arial,sans-serif;color:#1d162a;text-decoration:none">
+</td></tr>
+<tr><td style="padding:20px 28px 0">
+<div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#d2455a">${escape(t.eyebrow)}</div>
+<div style="font-size:12px;color:#777180;margin-top:10px">${escape(input.projectName)}</div>
+<h1 style="margin:6px 0 0;font-size:21px;line-height:1.3;color:#1d162a">${escape(input.reportTitle)}</h1>
+</td></tr>
+<tr><td style="padding:18px 28px 0;font-size:14px;line-height:1.6;color:#1d162a">
+<p style="margin:0">${escape(t.greeting(input.managerName))}</p>
+<p style="margin:10px 0 0">${escape(t.intro(input.clientName,channel))}</p>
+<p style="margin:10px 0 0;font-size:13px;color:#777180">${escape(t.reason)}${escape(t.sep)}${escape(input.reason)}</p>
+</td></tr>
+<tr><td style="padding:22px 28px 0">
+<a href="${logUrl}" style="display:inline-block;background:#00aebb;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;padding:13px 22px;border-radius:50px">${escape(t.cta)}</a>
+</td></tr>
+<tr><td style="padding:22px 28px 26px">
+<hr style="border:0;border-top:1px solid #ebe8ef;margin:0 0 14px">
+<p style="margin:0;font-size:11px;color:#777180">${escape(t.footer)}</p>
+</td></tr>
+</table></body></html>`;
+ return{subject:t.subject(input.projectName),text,html};
+}
