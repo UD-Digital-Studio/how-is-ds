@@ -5,7 +5,7 @@ project. Download the working example at
 `public/templates/project-roadmap-template.csv`, or from **Import roadmap** in
 the app.
 
-Requires OWNER or MANAGER on the target project. Maximum file size 2 MB.
+Requires OWNER or PRODUCT_OWNER on the target project. Maximum file size 2 MB.
 Every row is validated before anything is written, and the whole import runs in
 one transaction: if a row fails, nothing is saved.
 

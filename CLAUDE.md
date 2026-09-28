@@ -66,13 +66,28 @@ user off every device. `mustChange` sends the user to `/change-password`.
 
 ## Authorization
 
-Three roles live per project in `project_members`: `OWNER`, `MANAGER`, `CLIENT`.
-A user can hold different roles on different projects, so every query must scope
-by membership — check the role for *that* project, never a global role.
+Four roles live per project in `project_members`: `OWNER`, `PRODUCT_OWNER`,
+`MANAGER`, `CLIENT`. A user can hold different roles on different projects, so
+every query must scope by membership — check the role for *that* project, never
+a global role.
 
-- OWNER — project settings, members, People, create and delete projects.
-- MANAGER — roadmap, structure, imports, updates, reports, notifications.
+- OWNER — everything. Alone in destroying: deleting a project, removing a
+  member, and creating a project (which grants an OWNER membership).
+- PRODUCT_OWNER — shapes the work: roadmap structure, task CRUD, CSV imports,
+  project settings, People, client notification preferences. None of the deletes
+  above.
+- MANAGER — moves the work and speaks to the client: task status, blockers and
+  notes, meeting updates, reports and their notifications. No structure, no
+  imports, no settings, no People.
 - CLIENT — read-only, and only `PUBLISHED` reports.
+
+Use the tier helpers in `lib/access.ts` rather than inlining role lists:
+`canAdminister` (OWNER + PRODUCT_OWNER), `canReport` (those two + MANAGER),
+`isProjectOwner`. `project_members.title` ("Product Owner", "Project Manager",
+"Project Assistant") is a display label only and must never gate anything.
+Watch for role checks written with dollar-quoted literals
+(`role in ($role$OWNER$role$,…)` in `app/notifications/page.tsx`) — a plain grep
+for `'OWNER'` misses them.
 
 `users.can_own_projects` holds the right to create a project at the workspace
 level, because ownership itself is only granted through `project_members`: an
