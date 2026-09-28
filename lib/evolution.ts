@@ -23,7 +23,7 @@ export async function sendReportMessage(input: SendReportMessage) {
     ? `Bonjour ${input.clientName}, un nouveau rapport « ${input.reportTitle} » est disponible pour ${input.projectName}.\n\nConsulter le rapport : ${input.reportUrl}\nOuvrir le projet : ${input.projectUrl}`
     : `Hello ${input.clientName}, a new report “${input.reportTitle}” is available for ${input.projectName}.\n\nRead the report: ${input.reportUrl}\nOpen the project: ${input.projectUrl}`;
 
-  const response = await fetch(`${baseUrl.replace(/\/$/, "")}/message/sendText/${instance}`, {
+  const response = await fetch(`${baseUrl.replace(/\/$/, "")}/message/sendText/${encodeURIComponent(instance)}`, {
     method: "POST",
     headers: { "Content-Type": "application/json", apikey: apiKey },
     body: JSON.stringify({ number: input.phone, text }),
