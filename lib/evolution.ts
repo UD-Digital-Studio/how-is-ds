@@ -70,7 +70,7 @@ function phoneVariants(phone: string) {
   return [phone];
 }
 
-type Recipient =
+export type Recipient =
   | { status: "ok"; number: string }       // WhatsApp knows this form of the number
   | { status: "none" }                     // WhatsApp knows no form of it
   | { status: "unknown" };                 // the lookup itself did not answer
@@ -97,6 +97,20 @@ async function resolveRecipient(config: EvolutionConfig, phone: string): Promise
   } catch {
     return { status: "unknown" };
   }
+}
+
+// For the People forms: catch a number WhatsApp does not know while someone is
+// still looking at the field, instead of at publish time when a client silently
+// hears nothing. An unconfigured or unreachable Evolution must not block saving,
+// so both answer "unknown".
+export async function whatsappRecipient(phone: string): Promise<Recipient> {
+  let config: EvolutionConfig;
+  try {
+    config = evolutionConfig();
+  } catch {
+    return { status: "unknown" };
+  }
+  return resolveRecipient(config, phone);
 }
 
 export async function sendReportMessage(input: SendReportMessage) {

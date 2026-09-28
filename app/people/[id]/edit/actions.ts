@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { normalizePhone } from "@/lib/phone";
+import { whatsappRecipient, NOT_ON_WHATSAPP } from "@/lib/evolution";
 
 export type EditClientState={error?:string};
 export async function updateClient(_:EditClientState,data:FormData):Promise<EditClientState>{
@@ -16,6 +17,8 @@ export async function updateClient(_:EditClientState,data:FormData):Promise<Edit
  let phone:null|string=null;
  try{const raw=String(data.get("phone")||"").trim(),country=String(data.get("country_code")||"+237");phone=raw?normalizePhone(raw,country):null}catch(e){return{error:e instanceof Error?e.message:"Invalid phone number."}}
  if(optIn&&!phone)return{error:"Add a WhatsApp number before enabling WhatsApp notifications."};
+ // Only worth asking when we will actually message them. A lookup that cannot answer never blocks the save.
+ if(optIn&&phone&&(await whatsappRecipient(phone)).status==="none")return{error:NOT_ON_WHATSAPP};
  try{
   await db.query("update users set full_name=$1,email=$2,phone=$3,locale=$4,whatsapp_opt_in=$5 where id=$6",[name,email,phone,locale,optIn,id]);
  }catch(e){

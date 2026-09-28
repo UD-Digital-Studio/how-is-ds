@@ -1,4 +1,4 @@
-import{createServer,type Server}from"node:http";import{afterEach,describe,expect,it}from"vitest";import{sendReportMessage}from"@/lib/evolution";
+import{createServer,type Server}from"node:http";import{afterEach,describe,expect,it}from"vitest";import{sendReportMessage,whatsappRecipient}from"@/lib/evolution";
 const input={clientName:"Check",projectName:"Check",reportTitle:"Check",reportUrl:"https://example.com/r",projectUrl:"https://example.com/p",locale:"en",phone:"+237650206820"}as const;
 const realUrl=process.env.EVOLUTION_API_URL,realInstance=process.env.EVOLUTION_INSTANCE,realKey=process.env.EVOLUTION_API_KEY;let server:Server|undefined;
 afterEach(async()=>{process.env.EVOLUTION_API_URL=realUrl;process.env.EVOLUTION_INSTANCE=realInstance;process.env.EVOLUTION_API_KEY=realKey;if(server){await new Promise(done=>server!.close(done));server=undefined}});
@@ -21,5 +21,7 @@ describe("WhatsApp report delivery",()=>{
   it("never sends when no form is registered",async()=>{const calls:Call[]=await stub(path=>lookup()(calls)(path));await expect(sendReportMessage(input)).rejects.toThrow("This number has no WhatsApp account.");expect(calls.some(call=>call.path.includes("sendText"))).toBe(false)});
   it("sends to the stored number when the lookup itself fails",async()=>{const calls:Call[]=await stub(path=>path.includes("whatsappNumbers")?{status:404,body:{error:"Not Found"}}:sent);await sendReportMessage(input);expect(delivered(calls)).toBe("+237650206820")});
   it("rewords a send rejected for an unregistered number",async()=>{await stub(path=>path.includes("whatsappNumbers")?{status:500,body:{}}:{status:400,body:{status:400,error:"Bad Request",response:{message:[{jid:"237650206820@s.whatsapp.net",exists:false,number:"+237650206820"}]}}});await expect(sendReportMessage(input)).rejects.toThrow("This number has no WhatsApp account.")});
+  it("tells the People form a number is unusable",async()=>{await stub(()=>({status:200,body:[{jid:"237650206820@s.whatsapp.net",exists:false,number:"+237650206820"}]}));expect((await whatsappRecipient("+237650206820")).status).toBe("none")});
+  it("never blocks a save when Evolution is unconfigured",async()=>{delete process.env.EVOLUTION_API_URL;expect((await whatsappRecipient("+237650206820")).status).toBe("unknown")});
   it("keeps the server's own explanation for other failures",async()=>{await stub(path=>path.includes("whatsappNumbers")?{status:500,body:{}}:{status:401,body:{status:401,error:"Unauthorized"}});await expect(sendReportMessage(input)).rejects.toThrow(/Evolution API request failed \(401\)/)});
 });
