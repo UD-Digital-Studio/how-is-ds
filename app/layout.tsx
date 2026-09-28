@@ -6,6 +6,7 @@ import { TranslationLayer } from "@/components/translation-layer";
 import { AppNavigation } from "@/components/app-navigation";
 import { ModalForms } from "@/components/modal-forms";
 import { getSession } from "@/lib/auth";
+import { canOwnProjects } from "@/lib/access";
 import { db } from "@/lib/db";
 
 export const metadata: Metadata = {
@@ -28,6 +29,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       const roles = access.rows.map((item) => item.role);
       const role = roles.includes("OWNER") ? "OWNER" : roles.includes("MANAGER") ? "MANAGER" : "CLIENT";
       navigation = { role, projects: access.rows.map((item) => ({ id: item.id, name: item.name })) };
+    } else {
+      navigation = { role: (await canOwnProjects(session.userId)) ? "OWNER" : "CLIENT", projects: [] };
     }
   }
   return (

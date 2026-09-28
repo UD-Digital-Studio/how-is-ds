@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Dashboard } from "@/components/dashboard";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { canOwnProjects } from "@/lib/access";
 import { getLocale } from "@/lib/i18n";
 
 export default async function Home() {
@@ -13,7 +15,12 @@ export default async function Home() {
     from project_members pm join projects p on p.id=pm.project_id
     left join requirements r on r.project_id=p.id left join tasks t on t.requirement_id=r.id where pm.user_id=$1
     group by pm.role,p.id order by p.created_at desc`,[session.userId]);
-  if (!result.rowCount) redirect("/login");
+  if (!result.rowCount) {
+    const canCreate = await canOwnProjects(session.userId);
+    return <main className="project-page"><div className="project-top"><span className="eyebrow">OVERVIEW</span>{canCreate && <Link className="primary" href="/projects/new">＋ New project</Link>}</div>
+      <section className="project-hero"><p className="eyebrow">PORTFOLIO</p><h1>No projects yet</h1><p>{canCreate ? "Create a project, then import or build its roadmap." : "You are not assigned to a project yet. The project owner will add you."}</p></section>
+      <div className="empty-state">{canCreate ? "Projects you create appear here with their milestones, reports and delivery log." : "Once you are added to a project, its roadmap and reports appear here."}</div></main>;
+  }
   const current=result.rows[0];
   const milestone=(await db.query(`select m.id,m.title,m.starts_on,m.due_on,m.progress,m.position,count(t.id)::int tasks,count(t.id) filter(where t.status='DONE')::int done from milestones m left join requirements r on r.milestone_id=m.id left join tasks t on t.requirement_id=r.id where m.project_id=$1 and m.status in ('ACTIVE','BLOCKED') group by m.id order by m.position limit 1`,[current.id])).rows[0]??null;
   const summary=(await db.query(`select count(*) filter(where t.status='BLOCKED')::int blockers,(select count(*)::int from reports where project_id=$1 and status='PUBLISHED' and published_at>=date_trunc('month',now())) reports from requirements r join tasks t on t.requirement_id=r.id where r.project_id=$1`,[current.id])).rows[0];
