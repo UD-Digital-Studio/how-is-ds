@@ -44,8 +44,7 @@ diff noise.
 
 SQL is inline and always parameterized (`$1`), never string-interpolated.
 Server components query `db` directly; there is no data access layer to go
-through. `lib/data.ts` is leftover mock data from the prototype and is not used
-by any page.
+through.
 
 ## Layout
 
@@ -182,8 +181,6 @@ the full checklist including the domain, webhook and smoke tests.
   before "fixing" it: moving server-action forms after hydration crashed React
   reconciliation.
 - `*.Zone.Identifier` files are WSL download artifacts and are gitignored.
-- README's "Production foundation" steps describe work finished long ago. Trust
-  the code, `DEPLOYMENT.md` and `IMPORT.md` over that section.
 
 ## Docs
 
