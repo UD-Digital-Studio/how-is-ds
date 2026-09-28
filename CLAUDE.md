@@ -144,6 +144,15 @@ posts status events back to `/api/webhooks/evolution`, authenticated with the
 `x-webhook-secret` header, and `lib/evolution-status.ts` maps the provider's
 wording onto `SENT` / `DELIVERED` / `READ` / `FAILED`.
 
+Before sending, `sendReportMessage` asks Evolution which form of the number
+WhatsApp actually holds. Cameroon prefixed mobile numbers with a 6 in 2014 and
+an account registered before that keeps its eight-digit jid, so the stored
+nine-digit number can have no WhatsApp account while its older form does; the
+sender tries both and uses whichever exists, preferring the stored one. A number
+no form of which is registered fails with "This number has no WhatsApp account."
+rather than the provider's raw 400. A lookup that itself fails never blocks the
+send.
+
 ## Tests
 
 `tests/` runs on Vitest against the live database. `tests/database.test.ts`
