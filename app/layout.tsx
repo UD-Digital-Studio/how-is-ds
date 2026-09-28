@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { getLocale } from "@/lib/i18n";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { TranslationLayer } from "@/components/translation-layer";
 import { AppNavigation } from "@/components/app-navigation";
 import { ModalForms } from "@/components/modal-forms";
+import { InstallPrompt } from "@/components/install-prompt";
 import { getSession } from "@/lib/auth";
 import { canOwnProjects } from "@/lib/access";
 import { db } from "@/lib/db";
@@ -13,9 +14,15 @@ export const metadata: Metadata = {
   title: "How's DS — Project follow-up",
   description: "A clear view of every project, milestone and client report.",
   icons: {
-    icon: [{ url: "/favicon.webp", type: "image/webp" }],
+    icon: [{ url: "/favicon.webp", type: "image/webp" }, { url: "/icon-192.png", sizes: "192x192", type: "image/png" }],
     shortcut: "/favicon.webp",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "How's DS" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#00aebb",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -39,6 +46,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         {session && navigation ? <AppNavigation name={session.name} role={navigation.role} projects={navigation.projects} locale={locale}/> : <div className="global-locale"><LocaleSwitcher locale={locale}/></div>}
         <div className={session && navigation ? "authenticated-content" : ""}>{children}</div>
         {session && navigation && <ModalForms/>}
+        <InstallPrompt/>
       </body>
     </html>
   );
