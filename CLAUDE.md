@@ -152,11 +152,11 @@ no form of which is registered fails with "This number has no WhatsApp account."
 rather than the provider's raw 400. A lookup that itself fails never blocks the
 send.
 
-A delivery that fails emails every active `MANAGER` on that project, through
-`deliveryFailureEmail` in `lib/report-email.ts`. `alertManagers` swallows its own
-errors on purpose: an alert must not mask the failure it reports, and the client
-email and the alert share one SMTP host, so the host being down means the alert
-cannot arrive either. A project with no manager gets no alert.
+A delivery that fails emails every active `MANAGER` on that project — or the
+`OWNER` when the project has no manager — through `deliveryFailureEmail` in
+`lib/report-email.ts`. `alertProjectLeads` swallows its own errors on purpose: an
+alert must not mask the failure it reports, and the client email and the alert
+share one SMTP host, so the host being down means the alert cannot arrive either.
 
 ## Tests
 

@@ -7,3 +7,12 @@ describe("delivery failure alert",()=>{
  it("writes French for a French manager",()=>expect(deliveryFailureEmail({...input,locale:"fr"}).subject).toBe("Waklass : l’envoi d’une notification a échoué"));
  it("escapes the reason it puts in the html",()=>expect(deliveryFailureEmail({...input,reason:"<script>x</script>"}).html).not.toContain("<script>"));
 });
+
+import{failureRecipients}from"@/lib/notification-delivery";
+const lead=(role:string,name:string)=>({role,name});
+describe("who hears about a failed delivery",()=>{
+ it("tells the managers when there are any",()=>expect(failureRecipients([lead("MANAGER","Isidora"),lead("OWNER","Joseph")]).map(r=>r.name)).toEqual(["Isidora"]));
+ it("falls back to the owner when the project has no manager",()=>expect(failureRecipients([lead("OWNER","Joseph")]).map(r=>r.name)).toEqual(["Joseph"]));
+ it("tells every manager, not just the first",()=>expect(failureRecipients([lead("MANAGER","Isidora"),lead("MANAGER","Andy")])).toHaveLength(2));
+ it("never falls back to a product owner or client",()=>expect(failureRecipients([lead("PRODUCT_OWNER","Po"),lead("CLIENT","Client")])).toEqual([]));
+});
