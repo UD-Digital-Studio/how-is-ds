@@ -1,5 +1,5 @@
 import"server-only";
-type ReportEmail={clientName:string;projectName:string;reportTitle:string;reportUrl:string;projectUrl:string;locale:"en"|"fr"};
+type ReportEmail={appUrl:string;clientName:string;projectName:string;reportTitle:string;reportUrl:string;projectUrl:string;locale:"en"|"fr"};
 const copy={
  en:{sep:": ",subject:(p:string,t:string)=>`${p}: ${t}`,eyebrow:"NEW PROJECT REPORT",greeting:(n:string)=>`Hello ${n},`,
   intro:(p:string)=>`A new report is available for ${p}.`,cta:"Read the report",secondary:"Open the project in How’s DS",
@@ -10,11 +10,14 @@ const copy={
 };
 const escape=(v:string)=>v.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 export function reportEmail(input:ReportEmail){
- const t=copy[input.locale],project=escape(input.projectName),title=escape(input.reportTitle);
+ const t=copy[input.locale],logo=`${input.appUrl.replace(/\/$/,"")}/Logo%20DS%20colored.png`,project=escape(input.projectName),title=escape(input.reportTitle);
  const text=[t.greeting(input.clientName),"",t.intro(input.projectName),input.reportTitle,"",`${t.cta}${t.sep}${input.reportUrl}`,`${t.secondary}${t.sep}${input.projectUrl}`,"",t.footer(input.projectName)].join("\n");
  const html=`<!doctype html><html lang="${input.locale}"><body style="margin:0;padding:24px 12px;background:#f8f7fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1d162a">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #ebe8ef;border-radius:16px">
-<tr><td style="padding:28px 28px 0">
+<tr><td style="padding:26px 28px 0">
+<img src="${logo}" width="140" height="51" alt="How’s DS" style="display:block;border:0;font:700 16px -apple-system,'Segoe UI',Arial,sans-serif;color:#1d162a;text-decoration:none">
+</td></tr>
+<tr><td style="padding:20px 28px 0">
 <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#00aebb">${escape(t.eyebrow)}</div>
 <div style="font-size:12px;color:#777180;margin-top:10px">${project}</div>
 <h1 style="margin:6px 0 0;font-size:21px;line-height:1.3;color:#1d162a">${title}</h1>
