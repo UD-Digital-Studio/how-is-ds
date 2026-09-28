@@ -6,6 +6,7 @@ type SendReportMessage = {
   projectName: string;
   reportTitle: string;
   reportUrl: string;
+  projectUrl: string;
   locale: "en" | "fr";
 };
 
@@ -19,8 +20,8 @@ export async function sendReportMessage(input: SendReportMessage) {
   }
 
   const text = input.locale === "fr"
-    ? `Bonjour ${input.clientName}, un nouveau rapport « ${input.reportTitle} » est disponible pour ${input.projectName}. Consultez-le ici : ${input.reportUrl}`
-    : `Hello ${input.clientName}, a new report “${input.reportTitle}” is available for ${input.projectName}. View it here: ${input.reportUrl}`;
+    ? `Bonjour ${input.clientName}, un nouveau rapport « ${input.reportTitle} » est disponible pour ${input.projectName}.\n\nConsulter le rapport : ${input.reportUrl}\nOuvrir le projet : ${input.projectUrl}`
+    : `Hello ${input.clientName}, a new report “${input.reportTitle}” is available for ${input.projectName}.\n\nRead the report: ${input.reportUrl}\nOpen the project: ${input.projectUrl}`;
 
   const response = await fetch(`${baseUrl.replace(/\/$/, "")}/message/sendText/${instance}`, {
     method: "POST",
