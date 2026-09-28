@@ -10,7 +10,7 @@ export async function updateClient(_:EditClientState,data:FormData):Promise<Edit
  const id=String(data.get("client")||""),name=String(data.get("name")||"").trim(),email=String(data.get("email")||"").trim().toLowerCase(),locale=data.get("locale")==="fr"?"fr":"en",optIn=data.get("opt_in")==="on";
  if(!name||!/^\S+@\S+\.\S+$/.test(email))return{error:"Enter a valid name and email address."};
  const allowed=await db.query(`select 1 from project_members client
-  join project_members owner on owner.project_id=client.project_id and owner.role='OWNER'
+  join project_members owner on owner.project_id=client.project_id and owner.role in ('OWNER','PRODUCT_OWNER')
   where client.user_id=$1 and client.role='CLIENT' and owner.user_id=$2 limit 1`,[id,session.userId]);
  if(!allowed.rowCount)return{error:"You cannot edit this client."};
  let phone:null|string=null;

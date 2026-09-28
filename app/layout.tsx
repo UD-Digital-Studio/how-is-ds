@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       join projects p on p.id=pm.project_id where pm.user_id=$1 order by p.name`, [session.userId]);
     if (access.rowCount) {
       const roles = access.rows.map((item) => item.role);
-      const role = roles.includes("OWNER") ? "OWNER" : roles.includes("MANAGER") ? "MANAGER" : "CLIENT";
+      const role = roles.includes("OWNER") ? "OWNER" : roles.includes("PRODUCT_OWNER") ? "PRODUCT_OWNER" : roles.includes("MANAGER") ? "MANAGER" : "CLIENT";
       navigation = { role, projects: access.rows.map((item) => ({ id: item.id, name: item.name })) };
     } else {
       navigation = { role: (await canOwnProjects(session.userId)) ? "OWNER" : "CLIENT", projects: [] };

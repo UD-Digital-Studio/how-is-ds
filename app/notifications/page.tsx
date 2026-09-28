@@ -12,7 +12,7 @@ export default async function Notifications({ searchParams }: { searchParams: Pr
   if (!session) redirect("/login");
 
   const access = await db.query(
-    "select 1 from project_members where user_id=$1 and role in ($role$OWNER$role$,$role$MANAGER$role$) limit 1",
+    "select 1 from project_members where user_id=$1 and role in ($role$OWNER$role$,$role$PRODUCT_OWNER$role$,$role$MANAGER$role$) limit 1",
     [session.userId],
   );
   if (!access.rowCount) redirect("/");
@@ -26,7 +26,7 @@ export default async function Notifications({ searchParams }: { searchParams: Pr
      from notification_deliveries nd
      join reports r on r.id=nd.report_id
      join project_members pm on pm.project_id=r.project_id
-     where pm.user_id=$1 and pm.role in ($role$OWNER$role$,$role$MANAGER$role$)`,
+     where pm.user_id=$1 and pm.role in ($role$OWNER$role$,$role$PRODUCT_OWNER$role$,$role$MANAGER$role$)`,
     [session.userId],
   );
   const total = count.rows[0]?.total || 0;
@@ -42,7 +42,7 @@ export default async function Notifications({ searchParams }: { searchParams: Pr
      join reports r on r.id=nd.report_id
      join projects p on p.id=r.project_id
      join project_members pm on pm.project_id=p.id
-     where pm.user_id=$1 and pm.role in ($role$OWNER$role$,$role$MANAGER$role$)
+     where pm.user_id=$1 and pm.role in ($role$OWNER$role$,$role$PRODUCT_OWNER$role$,$role$MANAGER$role$)
      order by nd.created_at desc
      limit $2 offset $3`,
     [session.userId, pageSize, offset],

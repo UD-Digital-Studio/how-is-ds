@@ -12,6 +12,7 @@ export function AppNavigation({ name, role, projects, locale }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const initials = name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+  const shapes = role === "OWNER" || role === "PRODUCT_OWNER";
   const active = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
   const close = () => setOpen(false);
   const submenu = (items: { href: string; label: string }[]) => <div className="nav-submenu">{items.map((item) =>
@@ -29,7 +30,7 @@ export function AppNavigation({ name, role, projects, locale }: Props) {
             { href: "/projects", label: "All projects" },
             ...projects.map((project) => ({ href: `/projects/${project.id}`, label: project.name })),
             ...(role === "OWNER" ? [{ href: "/projects/new", label: "＋ New project" }] : []),
-            ...(role !== "CLIENT" ? [{ href: "/import", label: "Import roadmap" }] : []),
+            ...(shapes ? [{ href: "/import", label: "Import roadmap" }] : []),
           ])}
         </details>
         <details key={`reports-${pathname}`} open={pathname.startsWith("/reports")}>
@@ -39,7 +40,7 @@ export function AppNavigation({ name, role, projects, locale }: Props) {
             ...(role !== "CLIENT" ? [{ href: "/reports/generate", label: "Generate report" }, { href: "/reports/new", label: "Manual report" }] : []),
           ])}
         </details>
-        {role === "OWNER" && <details key={`people-${pathname}`} open={pathname.startsWith("/people")}>
+        {shapes && <details key={`people-${pathname}`} open={pathname.startsWith("/people")}>
           <summary className={pathname.startsWith("/people") ? "active" : ""}><span className="nav-symbol">♙</span>People<i>⌄</i></summary>
           {submenu([{ href: "/people", label: "Member directory" }, { href: "/people#internal-access", label: "Assign PM / PO" }, { href: "/people#client-access", label: "Add client" }])}
         </details>}

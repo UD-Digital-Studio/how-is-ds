@@ -72,7 +72,7 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
           <Link className="active" href="/"><Icon name="grid" />Overview</Link>
           <Link href="/projects"><Icon name="folder" />Projects <span className="nav-count">{assignedProjects.length}</span></Link>
           <Link href="/reports"><Icon name="report" />Reports</Link>
-          {role === "OWNER" && <Link href="/people"><Icon name="users" />People</Link>}
+          {(role === "OWNER" || role === "PRODUCT_OWNER") && <Link href="/people"><Icon name="users" />People</Link>}
           {role !== "CLIENT" && <Link href="/notifications"><Icon name="bell" />Notifications</Link>}
         </nav>
         <div className="sidebar-foot">
@@ -90,7 +90,7 @@ export function Dashboard({locale,userName,role,assignedProjects,focus,summary,a
           <div className="header-actions">
             <LocaleSwitcher locale={locale}/>
             {role !== "CLIENT" && <Link className="icon-button" href="/notifications" aria-label="Notifications"><Icon name="bell" /><i /></Link>}
-            <Link className="avatar" href={role === "OWNER" ? "/people" : "/projects"} aria-label="Open account area">{initials}</Link>
+            <Link className="avatar" href={role === "OWNER" || role === "PRODUCT_OWNER" ? "/people" : "/projects"} aria-label="Open account area">{initials}</Link>
           </div>
         </header>
 

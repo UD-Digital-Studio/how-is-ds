@@ -2,7 +2,7 @@ import Link from"next/link";import{notFound,redirect}from"next/navigation";impor
 const date=(v:any)=>v?new Date(v).toISOString().slice(0,10):"",display=(v:any)=>v?new Date(v).toLocaleDateString("en",{day:"numeric",month:"short",year:"numeric"}):"Not set";
 export default async function Structure({params}:{params:Promise<{id:string}>}){
  const s=await getSession();if(!s)redirect("/login");const{id}=await params;
- const access=await db.query("select p.name from projects p join project_members pm on pm.project_id=p.id where p.id=$1 and pm.user_id=$2 and pm.role in ('OWNER','MANAGER')",[id,s.userId]);if(!access.rowCount)notFound();
+ const access=await db.query("select p.name from projects p join project_members pm on pm.project_id=p.id where p.id=$1 and pm.user_id=$2 and pm.role in ('OWNER','PRODUCT_OWNER')",[id,s.userId]);if(!access.rowCount)notFound();
  const ms=(await db.query("select * from milestones where project_id=$1 order by position",[id])).rows,rs=(await db.query("select * from requirements where project_id=$1 order by position",[id])).rows,count=(mid:string)=>rs.filter(x=>x.milestone_id===mid).length;
  return <main className="project-page structure-page">
   <div className="project-top"><Link href={`/projects/${id}`}>← Project overview</Link><Link href={`/projects/${id}/manage`} className="primary">＋ Add to roadmap</Link></div>
