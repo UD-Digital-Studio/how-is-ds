@@ -30,7 +30,11 @@ export async function sendReportMessage(input: SendReportMessage) {
   });
 
   if (!response.ok) {
-    throw new Error(`Evolution API request failed (${response.status})`);
+    // Surface the server's own explanation: a wrong EVOLUTION_INSTANCE reads as a
+    // bare 404 otherwise, which says nothing in the delivery log.
+    const detail = await response.text().catch(() => "");
+    const message = detail.slice(0, 200).replace(/\s+/g, " ").trim();
+    throw new Error(`Evolution API request failed (${response.status})${message ? `: ${message}` : ""}`);
   }
 
   return response.json() as Promise<Record<string, unknown>>;
