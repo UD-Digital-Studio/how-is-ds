@@ -83,8 +83,9 @@ a global role.
 
 Use the tier helpers in `lib/access.ts` rather than inlining role lists:
 `canAdminister` (OWNER + PRODUCT_OWNER), `canReport` (those two + MANAGER),
-`isProjectOwner`. `project_members.title` ("Product Owner", "Project Manager",
-"Project Assistant") is a display label only and must never gate anything.
+`isProjectOwner`. `project_members.title` carries the two internal labels,
+"Product Owner" and "Project Manager", and the People forms derive the role from
+it — but nothing else may read it: authorize on `role`, never on `title`.
 Watch for role checks written with dollar-quoted literals
 (`role in ($role$OWNER$role$,…)` in `app/notifications/page.tsx`) — a plain grep
 for `'OWNER'` misses them.
