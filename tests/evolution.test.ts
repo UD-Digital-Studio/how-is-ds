@@ -1,5 +1,5 @@
 import{createServer,type Server}from"node:http";import{afterEach,describe,expect,it}from"vitest";import{sendReportMessage,whatsappRecipient}from"@/lib/evolution";
-const input={clientName:"Check",projectName:"Check",reportTitle:"Check",reportUrl:"https://example.com/r",projectUrl:"https://example.com/p",locale:"en",phone:"+237650206820"}as const;
+const input={clientName:"Check",projectName:"Check",reportTitle:"Check",reportBody:"Body",reportUrl:"https://example.com/r",projectUrl:"https://example.com/p",locale:"en",phone:"+237650206820"}as const;
 const realUrl=process.env.EVOLUTION_API_URL,realInstance=process.env.EVOLUTION_INSTANCE,realKey=process.env.EVOLUTION_API_KEY;let server:Server|undefined;
 afterEach(async()=>{process.env.EVOLUTION_API_URL=realUrl;process.env.EVOLUTION_INSTANCE=realInstance;process.env.EVOLUTION_API_KEY=realKey;if(server){await new Promise(done=>server!.close(done));server=undefined}});
 type Call={path:string;body:any};
